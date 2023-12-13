@@ -1,0 +1,175 @@
+#include <iostream>
+#include <iomanip>
+#include <vector>
+#include <algorithm>
+
+class KhachHang {
+public:
+    static int nextMaKH;
+    int maKH;
+    std::string hoTen;
+    std::string diaChi;
+    std::string soDT;
+    std::string loaiKH;
+
+    KhachHang(std::string hoTen, std::string diaChi, std::string soDT, std::string loaiKH)
+        : maKH(nextMaKH++), hoTen(hoTen), diaChi(diaChi), soDT(soDT), loaiKH(loaiKH) {}
+
+    void hienThiThongTin() const {
+        std::cout << "Ma KH: " << maKH << " | Ho ten: " << hoTen << " | Dia chi: " << diaChi
+                  << " | So DT: " << soDT << " | Loai KH: " << loaiKH << std::endl;
+    }
+};
+
+int KhachHang::nextMaKH = 100;
+
+class MatHang {
+public:
+    static int nextMaHang;
+    int maHang;
+    std::string tenHang;
+    std::string nhomHang;
+    double giaBan;
+
+    MatHang(std::string tenHang, std::string nhomHang, double giaBan)
+        : maHang(nextMaHang++), tenHang(tenHang), nhomHang(nhomHang), giaBan(giaBan) {}
+
+    void hienThiThongTin() const {
+        std::cout << "Ma hang: " << maHang << " | Ten hang: " << tenHang << " | Nhom hang: " << nhomHang
+                  << " | Gia ban: " << giaBan << std::endl;
+    }
+};
+
+int MatHang::nextMaHang = 100;
+
+class BangDanhSachMuaHang {
+public:
+    int maKH;
+    int maHang;
+    int soLuong;
+
+    BangDanhSachMuaHang(int maKH, int maHang, int soLuong)
+        : maKH(maKH), maHang(maHang), soLuong(soLuong) {}
+
+    void hienThiThongTin() const {
+        std::cout << "Ma KH: " << maKH << " | Ma hang: " << maHang << " | So luong: " << soLuong << std::endl;
+    }
+};
+
+void nhapDanhSachMatHang(std::vector<MatHang>& danhSachMatHang) {
+    int soLuongMatHang;
+    std::cout << "Nhap so luong mat hang: ";
+    std::cin >> soLuongMatHang;
+
+    for (int i = 0; i < soLuongMatHang; ++i) {
+        std::string tenHang, nhomHang;
+        double giaBan;
+
+        std::cout << "Nhap thong tin mat hang " << i + 1 << ":" << std::endl;
+        std::cout << "Ten hang: ";
+        std::cin >> tenHang;
+        std::cout << "Nhom hang (Thoi trang/Tieu dung/Dien may/Gia dung): ";
+        std::cin >> nhomHang;
+        std::cout << "Gia ban: ";
+        std::cin >> giaBan;
+
+        danhSachMatHang.push_back(MatHang(tenHang, nhomHang, giaBan));
+    }
+}
+
+void inDanhSachMatHang(const std::vector<MatHang>& danhSachMatHang) {
+    std::cout << "Danh sach mat hang:" << std::endl;
+    for (const auto& matHang : danhSachMatHang) {
+        matHang.hienThiThongTin();
+    }
+}
+
+void nhapDanhSachKhachHang(std::vector<KhachHang>& danhSachKhachHang) {
+    int soLuongKhachHang;
+    std::cout << "Nhap so luong khach hang: ";
+    std::cin >> soLuongKhachHang;
+
+    for (int i = 0; i < soLuongKhachHang; ++i) {
+        std::string hoTen, diaChi, soDT, loaiKH;
+
+        std::cout << "Nhap thong tin khach hang " << i + 1 << ":" << std::endl;
+        std::cout << "Ho ten: ";
+        std::cin.ignore();  // Clear newline character from previous input
+        std::getline(std::cin, hoTen);
+        std::cout << "Dia chi: ";
+        std::getline(std::cin, diaChi);
+        std::cout << "So DT: ";
+        std::cin >> soDT;
+        std::cout << "Loai KH (Mua le/Mua buon): ";
+        std::cin >> loaiKH;
+
+        danhSachKhachHang.push_back(KhachHang(hoTen, diaChi, soDT, loaiKH));
+    }
+}
+
+void inDanhSachKhachHang(const std::vector<KhachHang>& danhSachKhachHang) {
+    std::cout << "Danh sach khach hang:" << std::endl;
+    for (const auto& khachHang : danhSachKhachHang) {
+        khachHang.hienThiThongTin();
+    }
+}
+
+void lapBangDanhSachMuaHang(const std::vector<KhachHang>& danhSachKhachHang,
+                            const std::vector<MatHang>& danhSachMatHang,
+                            std::vector<BangDanhSachMuaHang>& bangDanhSachMuaHang) {
+    for (const auto& khachHang : danhSachKhachHang) {
+        int maKH = khachHang.maKH;
+        int soLuongMatHang;
+        std::cout << "Nhap so luong mat hang khach hang " << khachHang.maKH << " mua: ";
+        std::cin >> soLuongMatHang;
+
+        for (int i = 0; i < soLuongMatHang; ++i) {
+            int maHang, soLuong;
+            std::cout << "Nhap thong tin mat hang " << i + 1 << " cho khach hang " << khachHang.maKH << ":" << std::endl;
+            std::cout << "Ma hang: ";
+            std::cin >> maHang;
+
+
+            auto it = std::find_if(bangDanhSachMuaHang.begin(), bangDanhSachMuaHang.end(),
+                                   [maKH, maHang](const BangDanhSachMuaHang& item) {
+                                       return item.maKH == maKH && item.maHang == maHang;
+                                   });
+
+            if (it != bangDanhSachMuaHang.end()) {
+
+                std::cout << "Mat hang nay da co trong danh sach mua hang cua khach hang. Vui long nhap lai." << std::endl;
+                --i;  // Ð? nh?p l?i thông tin cho m?t hàng này
+            } else {
+           
+                std::cout << "So luong: ";
+                std::cin >> soLuong;
+
+                bangDanhSachMuaHang.push_back(BangDanhSachMuaHang(maKH, maHang, soLuong));
+            }
+        }
+    }
+}
+
+void inBangDanhSachMuaHang(const std::vector<BangDanhSachMuaHang>& bangDanhSachMuaHang) {
+    std::cout << "Bang danh sach mua hang:" << std::endl;
+    for (const auto& item : bangDanhSachMuaHang) {
+        item.hienThiThongTin();
+    }
+}
+
+int main() {
+    std::vector<MatHang> danhSachMatHang;
+    nhapDanhSachMatHang(danhSachMatHang);
+    inDanhSachMatHang(danhSachMatHang);
+
+    std::vector<KhachHang> danhSachKhachHang;
+    nhapDanhSachKhachHang(danhSachKhachHang);
+    inDanhSachKhachHang(danhSachKhachHang);
+
+    std::vector<BangDanhSachMuaHang> bangDanhSachMuaHang;
+    lapBangDanhSachMuaHang(danhSachKhachHang, danhSachMatHang, bangDanhSachMuaHang);
+    inBangDanhSachMuaHang(bangDanhSachMuaHang);
+
+    return 0;
+}
+
