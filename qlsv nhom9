@@ -1,0 +1,322 @@
+#include<iostream>
+#include<string.h> //char
+#include<conio.h> //getch()
+#include<iomanip> //setw, setprecision
+using namespace std;
+class sinhvien
+{
+	//private:
+	public:
+		char hoten[30], gioitinh[20];
+		char namsinh[20], diachi[30];
+		char masv[10], lop[10];
+		float tin1, tin2, tin3, tin4, anh1, anh2, DTB;
+		
+			void nhap();
+			void hienthi();
+};
+// xay dung phuong thuc nhap
+void sinhvien::nhap()
+{
+	cin.ignore(1); // xoa bo nho dem
+	cout<<"\n Nhap ho ten:";cin.getline(hoten,30);fflush(stdin);
+	cout<<"\n Nhap gioi tinh:";cin.getline(gioitinh,20);fflush(stdin);
+	cout<<"\n Nhap nam sinh:";cin.getline(namsinh,20);fflush(stdin);
+	cout<<"\n Nhap dia chi:";cin.getline(diachi,30);fflush(stdin);
+	cout<<"\n Nhap ma sinh vien:";cin.getline(masv,10);fflush(stdin);
+	cout<<"\n Nhap lop:";cin.getline(lop,10);fflush(stdin);
+	cout<<"\n Nhap diem tin 1:";
+	cin>>tin1;
+	cout<<"\n Nhap diem tin 2:";
+	cin>>tin2;
+	cout<<"\n Nhap diem tin 3:";
+	cin>>tin3;
+	cout<<"\n Nhap diem tin 4:";
+	cin>>tin4;
+	cout<<"\n Nhap diem anh 1:";
+	cin>>anh1;
+	cout<<"\n Nhap diem anh 2:";
+	cin>>anh2;
+	cout<<endl;
+}
+// xay dung phuong thuc hien thi
+void sinhvien::hienthi()
+{
+	cout<<"  "<<hoten<<setw(8)<<gioitinh<<setw(10)<<namsinh;
+	cout<<""<<setw(11)<<diachi<<setw(11)<<masv<<setw(11)<<lop;
+	 
+	cout<<""<<setw(10)<<tin1<<setw(10)<<tin2<<setw(10)<<tin3<<setw(10)<<tin4;
+	cout<<""<<setw(10)<<anh1<<setw(10)<<anh2;
+	
+	DTB=(tin1+tin2+tin3+tin4+anh1+anh2)/6;
+	cout<<""<<setw(12)<<DTB;
+	cout<<""<<setw(10)<<setprecision(2)<<DTB; //tinh diem tb lam tron
+	// xep loai hoc luc sinh vien
+	if(DTB>=8.5)
+	{
+		cout<<" Gioi";
+	}
+	else if(DTB>=7)
+	{
+		cout<<" Kha";
+	}
+	else if(DTB>=4)
+	{
+		cout<<" Trung Binh";
+	}
+	else if(DTB<4)
+	{
+		cout<<" Yeu";
+	}
+}
+// xay dung lop ke thua
+class quanlysv: public sinhvien
+{
+	public:
+		double DTB;
+		sinhvien sv[100]; //khai bao mang sinh vien
+		int n;
+		  
+		  void nhap();
+		  void hienthi();
+		  void xeploaiHL();
+		  void dssvDTBtd();
+		  void dssvDTBgd();
+		  void timsvDTBMAX();
+		  void timkiemsv();
+		
+};
+// xay dung phuong thuc nhap
+void quanlysv::nhap()
+{
+	cout<<"Nhap so luong sinh vien:";cin>>n; 
+	for(int i=0;i<n;i++)
+	{
+		cout<<"\n Sinh vien thu:"<<i+1<<"";
+		sv[i].nhap(); // Goi phuong thuc nhap o lop sinh vien
+	}
+}
+// xay dung phuong thuc hien thi
+void quanlysv::hienthi()
+{
+	cout<<"\n Ho Ten"<<setw(12)<<"Gioi Tinh"<<setw(11)<<"Nam Sinh"<<setw(12);
+	cout<<"Dia Chi"<<setw(14)<<"Ma Sinh Vien"<<setw(12)<<"Lop"<<setw(10);
+	
+	cout<<"Tin1"<<setw(10)<<"Tin2"<<setw(10)<<"Tin3"<<setw(10)<<"Tin4"<<setw(10);
+	cout<<"Anh1"<<setw(10)<<"Anh2"<<setw(9)<<"DTB"<<setw(14)<<"DTB Lam Tron"<<setw(10);
+	for(int i=0;i<n;i++)
+	{
+		sv[i].hienthi(); // Goi phuong thuc hien thi lop sinh vien o tren
+	}
+}
+// xep loai hoc luc sinh vien
+void quanlysv::xeploaiHL()
+{
+	cout<<"\n";
+	cout<<"---\n Sinh vien xep loai hoc luc gioi---"<<endl;
+	for(int i=0;i<n;i++)
+	{
+		if(sv[i].DTB>=8.5)
+		{
+			sv[i].hienthi();
+		}
+	}
+	cout<<"\n";
+	cout<<"\n--- Sinh vien xep loai hoc luc kha---"<<endl;
+	for(int i=0;i<n;i++)
+	{
+		if(sv[i].DTB>4||sv[i].DTB<=7)
+		{
+			sv[i].hienthi();
+		}
+	}
+	cout<<"\n";
+	cout<<"\n---Sinh vien xep loai hoc luc yeu---"<<endl;
+	for(int i=0;i<n;i++)
+	{
+		if(sv[i].DTB<4)
+		{
+			sv[i].hienthi();
+		}
+		
+	}
+}
+
+// Danh sach sinh vien co diem trung binh tang dan
+void quanlysv::dssvDTBtd()
+{
+	int i,j;
+	sinhvien tg;
+	cout<<"\n";
+	cout<<"\n---Danh sach sinh vien co diem trung binh tang dan---"<<endl;
+	for(i=0;i<n-1;i++)
+	{
+		for(j=i+1;j<n;j++)
+		{
+			if(sv[i].DTB>sv[j].DTB)
+			tg=sv[i];
+			sv[i]=sv[j];
+			sv[j]=tg;
+		}
+	}
+	cout<<"Sau khi sap xep la:"<<endl;
+	for(int i=0;i<n;i++)
+	{
+		sv[i].hienthi();
+	}
+}
+// Danh sach sinh vien co diem trung binh giam dan
+void quanlysv::dssvDTBgd()
+{
+	int i,j;
+	sinhvien tg;
+	cout<<"\n";
+	cout<<"\n---Danh sach sinh vien co diem trung binh giam dan---"<<endl;
+	for(i=0;i<n-1;i++)
+	{
+		for(j=i+1;j<n;j++)
+		{
+			if(sv[i].DTB<sv[j].DTB)
+			tg = sv[i];
+			sv[i] = sv[j];
+			sv[j] = tg;
+		}
+	}
+	cout<<"Sau khi sap xep:"<<endl;
+	for(int i=0;i<n;i++)
+	{
+		sv[i].hienthi();
+	}
+}
+// sinh vien co diem trung binh max
+void quanlysv::timsvDTBMAX()
+{
+	cout<<"\n";
+	cout<<"\n---Danh sach sinh vien co diem trung binh cao nhat---"<<endl;
+	int max = 0;
+	for(int i=0;i<n;i++)
+	{
+		if(sv[i].DTB>max)
+		{
+			max = sv[i].DTB;
+		}
+	}
+	for(int i=0;i<n;i++)
+	{
+		if(sv[i].DTB>max)
+		{
+			sv[i].hienthi();
+		}
+	}
+}
+// xay dung ham tim kiem sinh vien theo ma or hoten
+void quanlysv::timkiemsv()
+{
+	string msv;
+	int count=0;
+	cout<<"\n Nhap ma sinh vien can tim:";fflush(stdin);getline(cin,msv);
+	cout<<"\n---Thong tin sinh vien khi nhap xong la---";
+	cout<<"\n Ho Ten"<<setw(12)<<"Gioi Tinh"<<setw(11)<<"Nam Sinh"<<setw(12);
+	cout<<"Dia Chi"<<setw(14)<<"Ma Sinh Vien"<<setw(12)<<"Lop"<<setw(10);
+	cout<<"Tin1"<<setw(10)<<"Tin2"<<setw(10)<<"Tin3"<<setw(10)<<"Tin4"<<setw(10);
+	cout<<"Anh1"<<setw(10)<<"Anh2"<<setw(9)<<"DTB"<<setw(14)<<"DTB Lam Tron"<<setw(10);
+	for(int i=0;i<n;i++)
+	{
+		if(sv[i].masv == msv)
+		{
+			sv[i].hienthi();
+			count++;
+		}
+	}
+	if(count == 0)
+	{
+		cout<<"\n Khong tim thay thong tin sinh vien";
+	}
+}
+int main()
+{
+	quanlysv QLSV;
+	int m,option;
+	cout<<"Day la chuong trinh qldiem sv, nhap 1 so > 0 de tiep tuc:";cin>>m;
+	while(m>0){
+		system("cls");
+			cout<<"\tCHUONG TRINH QUAN LY DIEM SINH VIEN.\t"<<endl;;
+		cout<<"========================MENU============================\n";
+		cout<<"==                                                    ==\n";
+		cout<<"==        1.Nhap Thong Tin Sinh Vien.                 ==\n";
+		cout<<"==        2.In Ra Danh Sach Sinh Vien.                ==\n";
+		cout<<"==        3.Xep Loai Hoc Luc Sinh Vien Gioi Va Yeu.   ==\n";
+		cout<<"==        4.Danh Sach Sinh Vien DTB Tang Dan.         ==\n";
+		cout<<"==        5.Danh Sach Sinh Vien DTB Giam Dan.         ==\n";
+		cout<<"==        6.Danh Sach Sinh Vien DTB MAX.              ==\n";
+		cout<<"==        7.Tim Kiem Sinh Vien Theo MSV Or Ho Ten.    ==\n";
+		cout<<"==        8.Exit                                      ==\n";
+		cout<<"========================================================\n";
+		cout<<"\tHay nhap tuy chon cua ban: ";
+		cin>>option;
+		switch(option)
+		{
+			case 1:
+				cout<<"Moi ban nhap thong tin sinh vien:\n";
+				QLSV.nhap();
+				cout<<"			\n";
+				system("pause");
+				break;
+			case 2:
+				cout<<"Thong tin sinh vien ban nhap la:\n";
+				QLSV.hienthi();
+				cout<<"			\n";
+				system("pause");
+				break;
+			case 3:
+				cout<<"Danh sach sinh vien xep loai hoc luc:\n";
+				QLSV.xeploaiHL();
+				cout<<"			\n";
+				system("pause");
+				break;
+			case 4:
+				cout<<"Danh sach sinh vien diem trung binh tang dan:\n";
+				QLSV.dssvDTBtd();
+				cout<<"			\n";
+				system("pause");
+				break;
+			case 5:
+				cout<<"Danh sach sinh vien diem trung binh giam dan:\n";
+				QLSV.dssvDTBgd();
+				cout<<"			\n";
+				system("pause");
+				break;
+			case 6:
+				cout<<"Sinh vien co dem trung binh Max:\n";
+				QLSV.timsvDTBMAX();
+				cout<<"			\n";
+				system("pause");
+				break;
+			case 7:
+				cout<<"Tim kiem sinh vien theo ma sinh vien:\n";
+				QLSV.timkiemsv();
+				cout<<"			\n";
+				system("pause");
+				break;
+			case 8:
+				system("pause");
+			default:
+				cout<<"Ban da nhap sai. Xin moi nhap lai!\n";
+				break;
+		}
+	}
+//	quanlysv QLSV;
+//	QLSV.nhap();
+//	QLSV.hienthi();
+//	QLSV.xeploaiHL();
+//	QLSV.dssvDTBtd();
+//	QLSV.dssvDTBgd();
+//	QLSV.timsvDTBMAX();
+//	QLSV.timkiemsv();
+	getch();
+	return 0;
+}
+
+
+
+
